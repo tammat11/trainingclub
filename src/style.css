@@ -1,0 +1,810 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600&display=swap");
+:root {
+  --red: #f22a1f;
+  --black: #0c0c0c;
+  --paper: #f3f0e9;
+  --line: #323232;
+}
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  background: var(--black);
+  color: #fff;
+  font-family: Manrope, Arial, sans-serif;
+}
+button,
+a {
+  font: inherit;
+}
+button {
+  cursor: pointer;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+header {
+  height: 86px;
+  padding: 0 4.5vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: absolute;
+  z-index: 5;
+  width: 100%;
+  border-bottom: 1px solid #ffffff30;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  font: bold 13px Inter;
+  letter-spacing: 0.12em;
+}
+.logo span {
+  display: grid;
+  place-items: center;
+  background: var(--red);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  letter-spacing: -0.07em;
+}
+nav {
+  display: flex;
+  gap: 32px;
+  font-size: 13px;
+}
+nav a:hover {
+  color: var(--red);
+}
+.join {
+  border: 0;
+  background: var(--red);
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  gap: 26px;
+  padding: 18px 24px;
+  font-weight: 700;
+}
+.join svg {
+  width: 18px;
+}
+.mini {
+  padding: 13px 18px;
+  font-size: 12px;
+}
+.burger {
+  display: none;
+  background: none;
+  color: white;
+  border: 0;
+}
+.hero {
+  height: min(800px, 100vh);
+  min-height: 650px;
+  position: relative;
+  overflow: hidden;
+}
+.hero > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.heroShade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.88),
+    rgba(0, 0, 0, 0.18) 72%,
+    rgba(0, 0, 0, 0.35)
+  );
+}
+.heroCopy {
+  position: absolute;
+  top: 25%;
+  left: 8vw;
+  max-width: 840px;
+}
+.eyebrow {
+  font: 700 12px Inter;
+  letter-spacing: 0.2em;
+  margin: 0 0 28px;
+}
+.red {
+  color: var(--red);
+}
+h1,
+h2,
+h3 {
+  font-family: Inter;
+  margin: 0;
+  line-height: 0.94;
+  letter-spacing: -0.055em;
+}
+h1 {
+  font-size: clamp(58px, 7vw, 112px);
+}
+h1 i,
+h2 i {
+  font-weight: 400;
+  font-family: Georgia, serif;
+}
+.lead {
+  font-size: 18px;
+  line-height: 1.65;
+  max-width: 550px;
+  color: #d6d6d6;
+  margin: 34px 0;
+}
+.heroStat {
+  position: absolute;
+  right: 5vw;
+  bottom: 36px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.heroStat b {
+  font: 700 30px Inter;
+}
+.heroStat span {
+  width: 120px;
+  color: #bbb;
+  font-size: 12px;
+}
+.ticker {
+  overflow: hidden;
+  background: var(--red);
+  padding: 19px 0;
+  white-space: nowrap;
+  font: 800 14px Inter;
+  letter-spacing: 0.18em;
+}
+.tickerTrack {
+  display: flex;
+  width: max-content;
+  animation: roll 26s linear infinite;
+  will-change: transform;
+}
+.tickerGroup {
+  display: flex;
+  align-items: center;
+  gap: 54px;
+  padding-right: 54px;
+  flex: none;
+}
+.tickerGroup b {
+  font: inherit;
+}
+.tickerGroup i {
+  font-style: normal;
+  opacity: 0.72;
+}
+@keyframes roll {
+  to {
+    transform: translateX(-25%);
+  }
+}
+.intro,
+.benefits,
+.pricing {
+  padding: 100px 8vw;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8vw;
+}
+.intro h2,
+.sectionHead h2,
+.team h2,
+.cta h2 {
+  font-size: clamp(54px, 6.2vw, 104px);
+}
+.introText {
+  padding-top: 55px;
+  max-width: 570px;
+}
+.introText p {
+  font-size: 20px;
+  line-height: 1.6;
+  color: #bbb;
+}
+.introText a {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  color: var(--red);
+  font-weight: bold;
+  margin-top: 38px;
+}
+.mosaic {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  max-width: 1500px;
+  margin: auto;
+}
+.mosaic > div {
+  min-height: 420px;
+}
+.photo {
+  background-size: cover;
+  background-position: center;
+  filter: grayscale(1);
+}
+.p1 {
+  background-image: url("/group-warmup.png");
+}
+.p2 {
+  background-image: url("/individual-training.png");
+}
+.redcard {
+  background: var(--red);
+  padding: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.redcard span,
+.benefitGrid span {
+  font: 600 12px Inter;
+  letter-spacing: 0.18em;
+}
+.redcard h3 {
+  font-size: 50px;
+}
+.redcard p {
+  color: #ffd0ca;
+}
+.redcard.dark {
+  background: #181818;
+}
+.benefits {
+  background: var(--paper);
+  color: var(--black);
+}
+.sectionHead h2 {
+  margin-bottom: 40px;
+}
+.benefitGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.benefitGrid article {
+  padding: 34px;
+  border-top: 1px solid #b8b4ad;
+  min-height: 230px;
+}
+.benefitGrid span {
+  color: var(--red);
+}
+.benefitGrid h3 {
+  font-size: 22px;
+  letter-spacing: -0.03em;
+  margin: 32px 0 14px;
+}
+.benefitGrid p {
+  color: #555;
+  line-height: 1.6;
+  font-size: 14px;
+}
+.schedule {
+  background: #161616;
+  padding: 100px 8vw;
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 8vw;
+}
+.light > p:last-child {
+  color: #999;
+}
+.days > div {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 20px;
+  padding: 28px 18px;
+  border-top: 1px solid var(--line);
+  align-items: center;
+}
+.days > div.active {
+  border-color: #555;
+}
+.days b {
+  font: 700 18px Inter;
+}
+.days strong {
+  font-size: 13px;
+}
+.sessionList {
+  display: grid;
+  gap: 8px;
+}
+.session {
+  display: grid;
+  grid-template-columns: 125px minmax(180px, 1fr) 100px;
+  gap: 18px;
+  align-items: center;
+  padding: 14px 16px;
+  background: var(--red);
+}
+.session em {
+  font-style: normal;
+  font-size: 12px;
+  color: #ffd4d0;
+  text-align: right;
+}
+.emptyDay {
+  color: #777;
+}
+.team {
+  background: var(--paper);
+  color: var(--black);
+  padding: 100px 8vw;
+}
+.teamHeading {
+  display: grid;
+  grid-template-columns: 0.75fr 1.25fr;
+  gap: 8vw;
+  margin-bottom: 70px;
+}
+.teamHeading h2 {
+  font-size: clamp(54px, 6vw, 96px);
+}
+.coachGrid {
+  display: grid;
+  gap: 22px;
+}
+.coachCard {
+  display: grid;
+  grid-template-columns: minmax(360px, 0.85fr) 1.15fr;
+  min-height: 560px;
+  background: #fff;
+}
+.coachCard:nth-child(even) .coachImage {
+  order: 2;
+}
+.coachImage {
+  min-height: 560px;
+  background-size: cover;
+  background-position: center;
+  filter: grayscale(1);
+  position: relative;
+}
+.coachImage span {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--red);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font: 700 12px Inter;
+}
+.coachDetails {
+  padding: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.coachDetails h3 {
+  font-size: clamp(38px, 4vw, 68px);
+  margin-bottom: 34px;
+}
+.coachDetails ul {
+  list-style: none;
+  margin: 0 0 36px;
+  padding: 0;
+  columns: 2;
+  column-gap: 28px;
+}
+.coachDetails li {
+  break-inside: avoid;
+  padding: 10px 0 10px 18px;
+  border-top: 1px solid #ddd;
+  position: relative;
+  color: #444;
+  line-height: 1.45;
+}
+.coachDetails li::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--red);
+  position: absolute;
+  left: 0;
+  top: 17px;
+}
+.coachDetails blockquote {
+  margin: auto 0 0;
+  border-top: 1px solid #aaa;
+  padding: 25px 0 0;
+  font-family: Georgia, serif;
+  font-size: 22px;
+  font-style: italic;
+  line-height: 1.45;
+}
+.pricing {
+  background: var(--black);
+}
+.priceCards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.priceCards article {
+  border: 1px solid #333;
+  padding: 34px;
+  display: flex;
+  flex-direction: column;
+  min-height: 470px;
+}
+.priceCards .featured {
+  background: var(--red);
+  border-color: var(--red);
+}
+.priceCards article > p {
+  font: 700 11px Inter;
+  letter-spacing: 0.18em;
+}
+.priceCards h3 {
+  font-size: 42px;
+  margin: 60px 0 10px;
+}
+.priceCards span {
+  color: #999;
+  font-size: 13px;
+}
+.featured span {
+  color: #ffd3d0;
+}
+.priceCards ul {
+  list-style: none;
+  padding: 25px 0;
+  margin: auto 0 20px;
+  border-top: 1px solid #ffffff2b;
+}
+.priceCards li {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 12px 0;
+  font-size: 14px;
+}
+.priceCards li svg {
+  color: var(--red);
+}
+.featured li svg {
+  color: white;
+}
+.priceCards button {
+  background: white;
+  border: 0;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+}
+.cta {
+  padding: 105px 8vw;
+  background: var(--red);
+  position: relative;
+}
+.cta .join {
+  position: absolute;
+  right: 8vw;
+  bottom: 105px;
+  min-width: 365px;
+  justify-content: space-between;
+  padding: 23px 30px;
+  border: 1px solid #111;
+  border-radius: 999px;
+  background: #111;
+  color: #fff;
+  font-size: 15px;
+  box-shadow: none;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+.cta .join:hover {
+  transform: translateY(-3px);
+  background: #242424;
+}
+.pale {
+  background: #fff;
+  color: #111;
+}
+footer {
+  padding: 55px 5vw;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 0.7fr auto;
+  gap: 40px;
+  align-items: center;
+  color: #999;
+  font-size: 12px;
+}
+footer .logo {
+  color: white;
+}
+footer > div:not(.social) {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.social {
+  display: flex;
+  gap: 10px;
+}
+.social a {
+  border: 1px solid #444;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+}
+.social svg {
+  width: 18px;
+}
+.modal {
+  position: fixed;
+  inset: 0;
+  background: #000d;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+.modal form {
+  position: relative;
+  background: var(--paper);
+  color: #111;
+  width: min(540px, 100%);
+  padding: 55px;
+}
+.modal h3 {
+  font-size: 52px;
+}
+.modal form > p:not(.eyebrow) {
+  color: #666;
+  line-height: 1.6;
+  margin: 25px 0;
+}
+.modal input,
+.modal select {
+  width: 100%;
+  padding: 18px;
+  border: 1px solid #bbb;
+  background: transparent;
+  font-size: 17px;
+  margin-bottom: 12px;
+  color: #111;
+  border-radius: 0;
+}
+.formRow {
+  display: grid;
+  grid-template-columns: 0.65fr 1.35fr;
+  gap: 12px;
+}
+.modal .join {
+  width: 100%;
+  justify-content: space-between;
+}
+.close {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  border: 0;
+  background: none;
+}
+.success {
+  text-align: center;
+  padding: 30px 0;
+}
+.success > svg {
+  background: var(--red);
+  color: white;
+  border-radius: 50%;
+  padding: 10px;
+  width: 64px;
+  height: 64px;
+}
+.success h3 {
+  margin: 22px 0;
+  font-size: 45px;
+}
+@media (max-width: 850px) {
+  header {
+    height: 70px;
+  }
+  .mini,
+  nav {
+    display: none;
+  }
+  nav.show {
+    display: flex;
+    position: absolute;
+    top: 70px;
+    left: 0;
+    right: 0;
+    background: #111;
+    padding: 30px;
+    flex-direction: column;
+  }
+  .burger {
+    display: block;
+  }
+  .hero {
+    min-height: 720px;
+  }
+  .heroCopy {
+    top: 23%;
+    left: 6vw;
+    right: 6vw;
+  }
+  .heroStat {
+    display: none;
+  }
+  .intro,
+  .benefits,
+  .pricing,
+  .schedule {
+    grid-template-columns: 1fr;
+    padding: 90px 6vw;
+  }
+  .introText {
+    padding-top: 0;
+  }
+  .mosaic {
+    grid-template-columns: 1fr;
+  }
+  .mosaic > div {
+    min-height: 370px;
+  }
+  .redcard {
+    padding: 40px;
+  }
+  .redcard h3 {
+    font-size: 38px;
+  }
+  .benefitGrid {
+    grid-template-columns: 1fr;
+  }
+  .benefitGrid article {
+    min-height: auto;
+    padding: 24px 10px;
+  }
+  .benefitGrid h3 {
+    margin: 16px 0 8px;
+  }
+  .benefitGrid p {
+    margin: 0;
+    line-height: 1.5;
+  }
+  .schedule {
+    gap: 40px;
+  }
+  .days > div {
+    grid-template-columns: 48px 1fr;
+  }
+  .days strong {
+    grid-column: 2;
+  }
+  .team {
+    padding: 80px 6vw;
+  }
+  .teamHeading,
+  .coachCard {
+    grid-template-columns: 1fr;
+  }
+  .teamHeading {
+    gap: 0;
+    margin-bottom: 45px;
+  }
+  .coachCard:nth-child(even) .coachImage {
+    order: 0;
+  }
+  .coachImage {
+    min-height: 480px;
+  }
+  .coachDetails {
+    padding: 45px;
+  }
+  .session {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .session em {
+    text-align: left;
+  }
+  .priceCards {
+    grid-template-columns: 1fr;
+  }
+  .cta {
+    padding: 100px 6vw 200px;
+  }
+  .cta .join {
+    left: 6vw;
+    right: auto;
+    bottom: 90px;
+  }
+  footer {
+    grid-template-columns: 1fr 1fr;
+  }
+  .hero > img {
+    object-position: 74% center;
+  }
+}
+@media (max-width: 520px) {
+  h1 {
+    font-size: 54px;
+  }
+  .lead {
+    font-size: 16px;
+  }
+  .heroCopy {
+    top: 27%;
+  }
+  .intro h2,
+  .sectionHead h2,
+  .team h2,
+  .cta h2 {
+    font-size: 48px;
+  }
+  .mosaic > div {
+    min-height: 330px;
+  }
+  .benefitGrid {
+    grid-template-columns: 1fr;
+  }
+  .days > div {
+    padding: 22px 5px;
+  }
+  .days span {
+    font-size: 13px;
+  }
+  .coachImage {
+    min-height: 380px;
+  }
+  .coachDetails {
+    padding: 34px 24px;
+  }
+  .coachDetails h3 {
+    font-size: 38px;
+  }
+  .coachDetails ul {
+    columns: 1;
+  }
+  .coachDetails blockquote {
+    font-size: 19px;
+  }
+  .formRow {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .priceCards article {
+    padding: 26px;
+  }
+  .modal form {
+    padding: 45px 24px;
+  }
+  .modal h3 {
+    font-size: 40px;
+  }
+  footer {
+    grid-template-columns: 1fr;
+  }
+  .social {
+    order: 2;
+  }
+}
