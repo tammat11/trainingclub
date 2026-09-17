@@ -5,3 +5,7 @@ tmp/
 output/
 implementation-*.png
 design-qa.md
+.env
+.env.*
+.vercel/
+!.env.example

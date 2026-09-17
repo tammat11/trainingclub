@@ -20,10 +20,10 @@ npm run build
 - Anchor navigation scrolls to page sections.
 - All primary signup buttons open the same lead form.
 - The signup form collects name, phone, age, preferred time, and optional trainer.
-- A valid local submission shows a success state; no backend is connected yet.
+- `/api/lead` is a server-side function that sends validated applications to Telegram. The success state appears only after Telegram confirms delivery.
 - Mobile navigation opens from the menu button below 850 px.
 - Trainer content and weekly schedule are data arrays at the top of `src/main.jsx`.
 
 ## Integration note
 
-To send leads to a CRM, replace the local `submit` handler in `src/main.jsx` with an API request and keep the current success state only after a confirmed response. The destination for applications still needs to be selected (CRM, email, Telegram bot, or another endpoint).
+Configure `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` in the hosting provider's server-side environment. Do not prefix them with `VITE_` or put them in Git. The bot must be started by the recipient or added to the destination group before it can send messages. Vite's plain `npm run dev` serves only the frontend; use a serverless-aware local runtime to exercise `/api/lead` end to end.

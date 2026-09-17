@@ -1,15 +1,13 @@
 import React, { useState } from "react";
 import { createRoot } from "react-dom/client";
-import {
-  ArrowUpRight,
-  Check,
-  CaretDown,
-  List,
-  X,
-  InstagramLogo,
-  TelegramLogo,
-  WhatsappLogo,
-} from "phosphor-react";
+import ArrowUpRight from "phosphor-react/dist/icons/ArrowUpRight.esm.js";
+import Check from "phosphor-react/dist/icons/Check.esm.js";
+import CaretDown from "phosphor-react/dist/icons/CaretDown.esm.js";
+import List from "phosphor-react/dist/icons/List.esm.js";
+import X from "phosphor-react/dist/icons/X.esm.js";
+import InstagramLogo from "phosphor-react/dist/icons/InstagramLogo.esm.js";
+import TelegramLogo from "phosphor-react/dist/icons/TelegramLogo.esm.js";
+import WhatsappLogo from "phosphor-react/dist/icons/WhatsappLogo.esm.js";
 import "./style.css";
 
 const benefits = [
@@ -103,9 +101,26 @@ function App() {
   const [phone, setPhone] = useState("");
   const [form, setForm] = useState({ name: "", age: "", time: "", coach: "" });
   const [done, setDone] = useState(false);
-  const submit = (e) => {
+  const [sending, setSending] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  const submit = async (e) => {
     e.preventDefault();
-    if (phone.trim()) setDone(true);
+    setSending(true);
+    setSubmitError("");
+    try {
+      const response = await fetch("/api/lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, phone, website: e.currentTarget.elements.website.value }),
+      });
+      const result = await response.json();
+      if (!response.ok || !result.ok) throw new Error(result.error || "Не удалось отправить заявку");
+      setDone(true);
+    } catch (error) {
+      setSubmitError(error.message || "Не удалось отправить заявку. Попробуйте позже");
+    } finally {
+      setSending(false);
+    }
   };
   return (
     <main>
@@ -393,6 +408,7 @@ function App() {
                   тренировка
                 </h3>
                 <p>Оставьте номер — подберём подходящую группу.</p>
+                <input className="honeypot" name="website" tabIndex="-1" autoComplete="off" aria-hidden="true" />
                 <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="ФИО" />
                 <input
                   required
@@ -409,8 +425,9 @@ function App() {
                 <select value={form.coach} onChange={(e) => setForm({ ...form, coach: e.target.value })}>
                   <option value="">Без указания тренера</option><option>Аружан Рахимберлина</option><option>Яна Бобровская</option><option>Максим Фроловский</option>
                 </select>
-                <button className="join">
-                  Записаться <ArrowUpRight />
+                {submitError && <p className="formError" role="alert">{submitError}</p>}
+                <button className="join" disabled={sending}>
+                  {sending ? "Отправляем…" : "Записаться"} <ArrowUpRight />
                 </button>
               </>
             )}
