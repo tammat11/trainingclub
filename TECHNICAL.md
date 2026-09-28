@@ -5,7 +5,7 @@
 - React + Vite, single-page site.
 - `phosphor-react` for UI icons.
 - Main UI: `src/main.jsx`; styles and responsive rules: `src/style.css`.
-- Visual assets: `public/hero-running-club.png`, `public/group-warmup.png`, `public/individual-training.png`, and `public/coach-aruzhan-editorial.png`.
+- Visual assets: `public/hero-running-club.png`, `public/group-warmup.png`, `public/individual-training.png`, `public/coach-aruzhan-editorial.png`, and `public/coach-yana-bobrovskaya.jpg`.
 
 ## Run
 

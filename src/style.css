@@ -190,7 +190,7 @@ h2 i {
 }
 @keyframes roll {
   to {
-    transform: translateX(-25%);
+    transform: translateX(-50%);
   }
 }
 .intro,

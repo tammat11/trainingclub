@@ -32,7 +32,7 @@ export default async function handler(req, res) {
     Number(age) < 12 ||
     Number(age) > 100 ||
     !["Утро", "Вечер"].includes(time) ||
-    !["", "Аружан Рахимберлина", "Яна Бобровская", "Максим Фроловский"].includes(coach)
+    !["", "Аружан Рахымберлина", "Яна Бобровская", "Максим Фроловский"].includes(coach)
   ) {
     return json(res, 400, { error: "Проверьте данные заявки" });
   }

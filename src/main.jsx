@@ -19,7 +19,7 @@ const benefits = [
   [
     "02",
     "Профессиональные тренеры",
-    "Профессионалы по лёгкой атлетике помогают прогрессировать безопасно и уверенно.",
+    "Тренеры по лёгкой атлетике помогают улучшать результаты с учётом вашего уровня подготовки и правильной техники бега.",
   ],
   [
     "03",
@@ -38,7 +38,6 @@ const schedule = [
     day: "ВТ",
     sessions: [
       ["06:30 — 07:30", "Групповая тренировка", "Аружан"],
-      ["19:00 — 20:00", "Групповая тренировка", "Аружан"],
       ["19:00 — 20:00", "Групповая тренировка", "Яна"],
     ],
   },
@@ -47,18 +46,29 @@ const schedule = [
     day: "ЧТ",
     sessions: [
       ["06:30 — 07:30", "Групповая тренировка", "Аружан"],
-      ["19:00 — 20:00", "Групповая тренировка", "Аружан"],
       ["19:00 — 20:00", "Групповая тренировка", "Яна"],
     ],
   },
   { day: "ПТ", sessions: [] },
-  { day: "СБ", sessions: [] },
-  { day: "ВС", sessions: [["08:00 — 09:30", "Открытая тренировка", ""]] },
+  { day: "СБ", sessions: [["08:00 — 09:30", "Открытая тренировка", ""]] },
+  { day: "ВС", sessions: [] },
+];
+
+const tickerItems = [
+  "Постановка техники",
+  "Развитие выносливости",
+  "Работа над скоростью",
+  "Укрепление мышц",
+  "Развитие силы",
+  "Улучшение координации",
+  "Подготовка к забегам",
+  "Восстановление после нагрузок",
+  "Ивенты с партнерами",
 ];
 
 const coaches = [
   {
-    name: "Аружан Рахимберлина",
+    name: "Аружан Рахымберлина",
     image: "/coach-aruzhan-editorial.png",
     achievements: [
       "15 лет в беге",
@@ -71,7 +81,7 @@ const coaches = [
   },
   {
     name: "Яна Бобровская",
-    image: "/group-warmup.png",
+    image: "/coach-yana-bobrovskaya.jpg",
     achievements: [
       "12 лет в спорте",
       "Чемпионка и призёрка Казахстана",
@@ -146,35 +156,33 @@ function App() {
         <img src="/hero-running-club.png" />
         <div className="heroShade"></div>
         <div className="heroCopy">
-          <p className="eyebrow">БЕГОВОЙ КЛУБ · АЛМАТЫ · АСТАНА · ШЫМКЕНТ</p>
+          <p className="eyebrow">БЕГОВОЙ КЛУБ · АЛМАТЫ</p>
           <h1>
             Сильные тела
             <br />
             <i>— Крепкие связи</i>
           </h1>
           <p className="lead">
-            Тренировки с профессиональными тренерами в сильном комьюнити.
+            Тренировки с профессиональными тренерами в сообществе сильных.
           </p>
           <button className="join" onClick={() => setOpen(true)}>
             Начать бегать <ArrowUpRight />
           </button>
         </div>
-        <div className="heroStat">
-          <b>06:30</b>
-          <span>старт утренних тренировок</span>
-        </div>
       </section>
       <section className="ticker">
         <div className="tickerTrack">
-          {[0, 1, 2, 3].map((group) => (
+          {[0, 1].map((group) => (
             <span
               className="tickerGroup"
               aria-hidden={group ? "true" : undefined}
               key={group}
             >
-              <b>RUN TOGETHER</b><i>·</i>
-              <b>GROW STRONGER</b><i>·</i>
-              <b>ALMATY RUNNING COMMUNITY</b><i>·</i>
+              {tickerItems.map((item) => (
+                <React.Fragment key={item}>
+                  <b>{item}</b><i>·</i>
+                </React.Fragment>
+              ))}
             </span>
           ))}
         </div>
@@ -194,8 +202,8 @@ function App() {
             находить своих людей.
           </p>
           <p>
-            Открытые утренние тренировки, специализированные группы и программы
-            под ваш уровень подготовки.
+            Открытые тренировки, специализированные группы и программы под ваш
+            уровень подготовки, ивенты с партнерами и крутые коллаборации.
           </p>
           <a href="#schedule">
             Посмотреть расписание <CaretDown />
@@ -211,7 +219,6 @@ function App() {
             <br />
             тренировки
           </h3>
-          <p>Можно начать уже завтра.</p>
         </div>
         <div className="redcard dark">
           <span>02</span>
@@ -329,7 +336,7 @@ function App() {
           <article className="featured">
             <p>ПРОДВИНУТЫЕ</p>
             <h3>42 000 ₸</h3>
-            <span>в месяц · тренировка 90 минут</span>
+            <span>в месяц · тренировка 60-90 минут</span>
             <ul>
               <li>
                 <Check />
@@ -366,7 +373,7 @@ function App() {
           TRAINING CLUB
         </a>
         <div>
-          <p>Алматы · Астана · Шымкент</p>
+          <p>Алматы</p>
           <a href="tel:+77075837707">+7 707 583 77 07</a>
           <a href="https://instagram.com/trainingclub.kz">@trainingclub.kz</a>
         </div>
@@ -423,7 +430,7 @@ function App() {
                   </select>
                 </div>
                 <select value={form.coach} onChange={(e) => setForm({ ...form, coach: e.target.value })}>
-                  <option value="">Без указания тренера</option><option>Аружан Рахимберлина</option><option>Яна Бобровская</option><option>Максим Фроловский</option>
+                  <option value="">Без указания тренера</option><option>Аружан Рахымберлина</option><option>Яна Бобровская</option><option>Максим Фроловский</option>
                 </select>
                 {submitError && <p className="formError" role="alert">{submitError}</p>}
                 <button className="join" disabled={sending}>
