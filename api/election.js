@@ -19,6 +19,7 @@ const publicCandidate = (c) => ({
   position: c.position,
   tenure: c.tenure,
   plan: c.plan,
+  photo: c.photo || false,
   eligible: isEligible(c),
 });
 
@@ -34,9 +35,14 @@ const nominate = async (redis, body, phone) => {
   const position = clean(body.position, 20);
   const tenure = clean(body.tenure, 10);
   const plan = clean(body.plan, 2000);
+  const photo = typeof body.photo === "string" ? body.photo : "";
 
   if (name.length < 3 || !POSITIONS[position] || !TENURES[tenure] || plan.length < 10) {
     return [400, { error: "Заполните ФИО, должность, стаж и план развития клуба" }];
+  }
+  // The browser resizes the photo to a small JPEG before sending it.
+  if (!/^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(photo) || photo.length > 400_000) {
+    return [400, { error: "Прикрепите фото кандидата" }];
   }
   if (!(await redis("SADD", "candidacy", `${position}:${phone}`))) {
     return [409, { error: `Вы уже выдвинули кандидатуру на должность «${POSITIONS[position]}»` }];
@@ -49,9 +55,12 @@ const nominate = async (redis, body, phone) => {
     tenure,
     plan,
     phone,
+    photo: true,
     createdAt: Date.now(),
     hidden: false,
   };
+  // Photos live in their own hash so the polled state stays small.
+  await redis("HSET", "photos", candidate.id, photo);
   await redis("HSET", "candidates", candidate.id, JSON.stringify(candidate));
   return [200, { ok: true }];
 };

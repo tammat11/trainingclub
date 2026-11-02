@@ -10,7 +10,7 @@ const electionApi = {
     process.env.ELECTION_ADMIN_KEY ||= "dev";
     server.middlewares.use(async (req, res, next) => {
       const route = req.url.split("?")[0];
-      if (route !== "/api/election" && route !== "/api/election-admin") return next();
+      if (!["/api/election", "/api/election-admin", "/api/election-photo"].includes(route)) return next();
       let raw = "";
       for await (const chunk of req) raw += chunk;
       req.body = raw ? JSON.parse(raw) : {};
