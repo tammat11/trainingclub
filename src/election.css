@@ -757,6 +757,17 @@ textarea {
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
+.chip.officer {
+  background: #ffffff14;
+  color: #e5e5e5;
+}
+.cardBody .chip {
+  max-width: 100%;
+  margin-bottom: 4px;
+  font-size: 11px;
+  line-height: 1.3;
+  letter-spacing: 0.04em;
+}
 .plan {
   white-space: pre-wrap;
   line-height: 1.65;

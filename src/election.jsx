@@ -103,6 +103,9 @@ const storage = {
   },
 };
 
+// Officers name their own role, e.g. "Офицер по мероприятиям".
+const roleLabel = (c) => (c.position === "officer" ? c.officerRole || "Офицер" : "Президент");
+
 const photoUrl = (c) => (c.photo ? `/api/election-photo?id=${c.id}` : "");
 const initials = (name) =>
   name
@@ -225,7 +228,7 @@ function PlanModal({ c, data, onClose }) {
         </button>
         <Avatar c={c} className="modalPhoto" />
         <div className="modalBody">
-          <span className="chip">{data.positions[c.position]}</span>
+          <span className={`chip ${c.position}`}>{roleLabel(c)}</span>
           <h3>{c.name}</h3>
           <p className="meta">В клубе: {data.tenures[c.tenure].toLowerCase()}</p>
           <h4>План развития клуба</h4>
@@ -249,6 +252,7 @@ function CandidateCard({ c, data, selected, onSelect, onOpen }) {
         {!c.eligible && <span className="badge">Стаж меньше года</span>}
       </div>
       <div className="cardBody">
+        <span className={`chip ${c.position}`}>{roleLabel(c)}</span>
         <h3>{c.name}</h3>
         <p className="meta">В клубе {data.tenures[c.tenure].toLowerCase()}</p>
         <button
@@ -269,7 +273,7 @@ function CandidateCard({ c, data, selected, onSelect, onOpen }) {
 function PositionTabs({ data, value, onChange, count }) {
   return (
     <div className="tabs" role="tablist">
-      {Object.entries(data.positions).map(([key, title]) => (
+      {[["all", "Все"], ...Object.entries(data.positions)].map(([key, title]) => (
         <button
           key={key}
           type="button"
@@ -287,8 +291,9 @@ function PositionTabs({ data, value, onChange, count }) {
 }
 
 function CandidateList({ data, onOpen }) {
-  const [position, setPosition] = useState("president");
-  const list = data.candidates.filter((c) => c.position === position);
+  const [position, setPosition] = useState("all");
+  const matches = (c, key) => key === "all" || c.position === key;
+  const list = data.candidates.filter((c) => matches(c, position));
   return (
     <section className="block">
       <div className="blockHead">
@@ -297,7 +302,7 @@ function CandidateList({ data, onOpen }) {
           data={data}
           value={position}
           onChange={setPosition}
-          count={(key) => data.candidates.filter((c) => c.position === key).length}
+          count={(key) => data.candidates.filter((c) => matches(c, key)).length}
         />
       </div>
       {list.length ? (
@@ -314,7 +319,7 @@ function CandidateList({ data, onOpen }) {
 }
 
 function NominationForm({ data, onDone }) {
-  const blank = { name: "", phone: "", position: "", tenure: "", plan: "", photo: "" };
+  const blank = { name: "", phone: "", position: "", officerRole: "", tenure: "", plan: "", photo: "" };
   const [form, setForm] = useState(blank);
   const [status, setStatus] = useState({ sending: false, error: "", done: false });
   const fileRef = useRef(null);
@@ -385,6 +390,19 @@ function NominationForm({ data, onDone }) {
           ))}
         </div>
       </div>
+      {form.position === "officer" && (
+        <label>
+          Тип офицера
+          <input
+            required
+            minLength="2"
+            maxLength="80"
+            value={form.officerRole}
+            onChange={set("officerRole")}
+            placeholder="Например: офицер по мероприятиям"
+          />
+        </label>
+      )}
       <label>
         Сколько вы в клубе
         <select required value={form.tenure} onChange={set("tenure")}>
@@ -550,7 +568,10 @@ function Results({ data, candidates = data.candidates, title = "Ход голо�
                       <div className="track">
                         <div style={{ width: `${share}%` }} />
                       </div>
-                      <small>{votesLabel(c.votes)}</small>
+                      <small>
+                        {votesLabel(c.votes)}
+                        {c.position === "officer" && c.officerRole ? ` · ${c.officerRole}` : ""}
+                      </small>
                     </div>
                   </div>
                 );
@@ -657,7 +678,7 @@ function Admin() {
                 <div className="resultMain">
                   <b>{c.name}</b>
                   <p className="meta">
-                    {POSITION_NAMES[c.position]} · стаж {c.tenure} · {formatPhone(c.phone)}
+                    {roleLabel(c)} · стаж {c.tenure} · {formatPhone(c.phone)}
                     {c.hidden && " · скрыт"}
                   </p>
                 </div>

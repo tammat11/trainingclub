@@ -17,6 +17,7 @@ const publicCandidate = (c) => ({
   id: c.id,
   name: c.name,
   position: c.position,
+  officerRole: c.officerRole || "",
   tenure: c.tenure,
   plan: c.plan,
   photo: c.photo || false,
@@ -35,10 +36,14 @@ const nominate = async (redis, body, phone) => {
   const position = clean(body.position, 20);
   const tenure = clean(body.tenure, 10);
   const plan = clean(body.plan, 2000);
+  const officerRole = position === "officer" ? clean(body.officerRole, 80) : "";
   const photo = typeof body.photo === "string" ? body.photo : "";
 
   if (name.length < 3 || !POSITIONS[position] || !TENURES[tenure] || plan.length < 10) {
     return [400, { error: "Заполните ФИО, должность, стаж и план развития клуба" }];
+  }
+  if (position === "officer" && officerRole.length < 2) {
+    return [400, { error: "Укажите, каким офицером хотите быть" }];
   }
   // The browser resizes the photo to a small JPEG before sending it.
   if (!/^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(photo) || photo.length > 400_000) {
@@ -52,6 +57,7 @@ const nominate = async (redis, body, phone) => {
     id: randomUUID().slice(0, 8),
     name,
     position,
+    officerRole,
     tenure,
     plan,
     phone,
