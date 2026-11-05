@@ -572,15 +572,12 @@ function Results({ data, candidates = data.candidates, title = "Ход голо�
                     <div className="resultMain">
                       <div className="resultLabel">
                         <span>{c.name}</span>
-                        <b>{Math.round(share)}%</b>
+                        <b>{votesLabel(c.votes)}</b>
                       </div>
                       <div className="track">
                         <div style={{ width: `${share}%` }} />
                       </div>
-                      <small>
-                        {votesLabel(c.votes)}
-                        {c.position === "officer" && c.officerRole ? ` · ${c.officerRole}` : ""}
-                      </small>
+                      {c.position === "officer" && c.officerRole && <small>{c.officerRole}</small>}
                     </div>
                   </div>
                 );
