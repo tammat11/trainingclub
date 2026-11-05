@@ -50,6 +50,17 @@ export default async function handler(req, res) {
       if (typeof body.officerRole === "string") candidate.officerRole = body.officerRole.trim().slice(0, 80);
       if (typeof body.plan === "string" && body.plan.trim().length >= 10) candidate.plan = body.plan.trim().slice(0, 2000);
       await redis("HSET", "candidates", candidate.id, JSON.stringify(candidate));
+    } else if (body.action === "officerVoters") {
+      // Voters of the officer ballot and how many officers each has on record.
+      const phones = (await redis("SMEMBERS", "voted:officer")) || [];
+      const voters = [];
+      for (const phone of phones) voters.push({ phone, officers: (await redis("SMEMBERS", `officerVotes:${phone}`)) || [] });
+      return json(res, 200, { ok: true, voters });
+    } else if (body.action === "markOfficerVote") {
+      // Records which officer a legacy voter already chose, without counting the vote again.
+      const phone = normalizePhone(body.phone);
+      if (!phone || !(await redis("SISMEMBER", "voted:officer", phone))) return json(res, 404, { error: "Голос не найден" });
+      await redis("SADD", `officerVotes:${phone}`, String(body.id || ""));
     } else if (body.action === "phase") {
       if (body.phase === "auto") await redis("DEL", "phase");
       else if (PHASES.includes(body.phase)) await redis("SET", "phase", body.phase);

@@ -95,20 +95,40 @@ const vote = async (redis, body, phone) => {
 
   const recorded = [];
   const repeated = [];
+  const mine = `officerVotes:${phone}`;
   for (const [position, list] of picked) {
-    // SADD is atomic, so a second ballot from the same phone never reaches HINCRBY.
-    if (await redis("SADD", `voted:${position}`, phone)) {
-      for (const candidate of list) await redis("HINCRBY", `votes:${position}`, candidate.id, 1);
-      recorded.push(position);
-    } else {
-      repeated.push(position);
+    if (!MULTI.has(position)) {
+      // SADD is atomic, so a second ballot from the same phone never reaches HINCRBY.
+      if (await redis("SADD", `voted:${position}`, phone)) {
+        await redis("HINCRBY", `votes:${position}`, list[0].id, 1);
+        recorded.push(position);
+      } else {
+        repeated.push(position);
+      }
+      continue;
     }
+    // One vote per officer per phone; more officers can be added later.
+    // A voter with no per-officer record voted before this was tracked and must be migrated first.
+    if ((await redis("SISMEMBER", `voted:${position}`, phone)) && !(await redis("SCARD", mine))) {
+      repeated.push(position);
+      continue;
+    }
+    let added = 0;
+    for (const candidate of list) {
+      if (await redis("SADD", mine, candidate.id)) {
+        await redis("HINCRBY", `votes:${position}`, candidate.id, 1);
+        added++;
+      }
+    }
+    await redis("SADD", `voted:${position}`, phone);
+    (added ? recorded : repeated).push(position);
   }
 
+  const officers = (await redis("SMEMBERS", mine)) || [];
   if (!recorded.length) {
-    return [409, { error: "С этого номера уже проголосовали. Повторное голосование невозможно" }];
+    return [409, { error: "За выбранных кандидатов с этого номера уже проголосовали", officers }];
   }
-  return [200, { ok: true, recorded, repeated }];
+  return [200, { ok: true, recorded, repeated, officers }];
 };
 
 export default async function handler(req, res) {

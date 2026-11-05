@@ -65,6 +65,7 @@ const memory = () => {
     SREM: (key, ...members) => members.filter((m) => set(key).delete(m)).length,
     SISMEMBER: (key, member) => (set(key).has(member) ? 1 : 0),
     SCARD: (key) => set(key).size,
+    SMEMBERS: (key) => [...set(key)],
     HSET: (key, field, value) => (hash(key).set(field, String(value)), 1),
     HGET: (key, field) => hash(key).get(field) ?? null,
     HGETALL: (key) => [...hash(key)].flat(),

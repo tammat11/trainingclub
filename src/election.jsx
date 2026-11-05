@@ -160,7 +160,7 @@ function Hero({ data }) {
       "Идёт выдвижение",
       "Резиденты могут выдвинуть себя на пост президента или офицера и рассказать, как будут развивать клуб.",
     ],
-    voting: ["Идёт голосование", "Один голос за президента, за офицеров — можно за нескольких. Голосовать можно один раз, результаты обновляются в реальном времени."],
+    voting: ["Идёт голосование", "За президента — один голос. За офицеров — за нескольких, и к своему выбору можно вернуться и добавить новых. Результаты обновляются в реальном времени."],
     closed: ["Голосование завершено", "Итоги подведём в воскресенье. Спасибо всем, кто проголосовал!"],
   }[phase];
   const deadline = {
@@ -239,7 +239,7 @@ function PlanModal({ c, data, onClose }) {
   );
 }
 
-function CandidateCard({ c, data, selected, onSelect, onOpen }) {
+function CandidateCard({ c, data, selected, done, onSelect, onOpen }) {
   const selectable = Boolean(onSelect);
   return (
     <article
@@ -250,6 +250,7 @@ function CandidateCard({ c, data, selected, onSelect, onOpen }) {
         <Avatar c={c} />
         {selectable && <span className={`check ${selected ? "on" : ""}`}>✓</span>}
         {!c.eligible && <span className="badge">Скрыт</span>}
+        {done && <span className="badge voted">Ваш голос</span>}
       </div>
       <div className="cardBody">
         <span className={`chip ${c.position}`}>{roleLabel(c)}</span>
@@ -441,9 +442,14 @@ function NominationForm({ data, onDone }) {
 function Ballot({ data, onDone, onOpen }) {
   const [choices, setChoices] = useState({});
   const [phone, setPhone] = useState("");
-  const [voted, setVoted] = useState(() => storage.get("tc-election-voted"));
+  // Only the president ballot locks; officers stay open so more can be added later.
+  const [voted, setVoted] = useState(() => storage.get("tc-election-voted").filter((p) => p !== "officer"));
+  const [myOfficers, setMyOfficers] = useState(() => storage.get("tc-election-officers"));
   const [status, setStatus] = useState({ sending: false, error: "" });
-  const open = Object.keys(data.positions).filter((p) => !voted.includes(p));
+  const officersLeft = data.candidates.some(
+    (c) => c.position === "officer" && c.eligible && !myOfficers.includes(c.id),
+  );
+  const open = Object.keys(data.positions).filter((p) => (p === "officer" ? officersLeft : !voted.includes(p)));
 
   const submit = async (e) => {
     e.preventDefault();
@@ -456,12 +462,15 @@ function Ballot({ data, onDone, onOpen }) {
         choices,
         website: e.currentTarget.elements.website.value,
       });
-      const next = [...new Set([...voted, ...result.recorded, ...result.repeated])];
+      const next = [...new Set([...voted, ...result.recorded, ...result.repeated])].filter((p) => p !== "officer");
       storage.set("tc-election-voted", next);
+      storage.set("tc-election-officers", result.officers);
       setVoted(next);
+      setMyOfficers(result.officers);
+      setChoices({});
       setStatus({
         sending: false,
-        error: result.repeated.length ? "По одной из должностей с этого номера уже голосовали" : "",
+        error: result.repeated.includes("president") ? "За президента с этого номера уже голосовали" : "",
       });
       onDone();
     } catch (error) {
@@ -488,7 +497,9 @@ function Ballot({ data, onDone, onOpen }) {
           <section key={position} className="ballotGroup">
             <div className="blockHead">
               <h2>{position === "officer" ? "Выберите офицеров" : "Выберите президента"}</h2>
-              <span className="muted">{position === "officer" ? "Можно несколько" : "Один голос"}</span>
+              <span className="muted">
+                {position === "officer" ? "Можно несколько, добавлять можно позже" : "Один голос"}
+              </span>
             </div>
             {list.length ? (
               <div className="grid">
@@ -498,10 +509,16 @@ function Ballot({ data, onDone, onOpen }) {
                     c={c}
                     data={data}
                     onOpen={onOpen}
-                    selected={position === "officer" ? (choices.officer || []).includes(c.id) : choices[position] === c.id}
+                    done={position === "officer" && myOfficers.includes(c.id)}
+                    selected={
+                      position === "officer"
+                        ? myOfficers.includes(c.id) || (choices.officer || []).includes(c.id)
+                        : choices[position] === c.id
+                    }
                     onSelect={() =>
                       setChoices((prev) => {
                         if (position !== "officer") return { ...prev, [position]: c.id };
+                        if (myOfficers.includes(c.id)) return prev;
                         const current = prev.officer || [];
                         const officer = current.includes(c.id) ? current.filter((id) => id !== c.id) : [...current, c.id];
                         const { officer: _, ...rest } = prev;
