@@ -557,17 +557,18 @@ function Results({ data, candidates = data.candidates, title = "Ход голо�
           const list = candidates
             .filter((c) => c.position === position && c.eligible)
             .map((c) => ({ ...c, votes: counts[c.id] || 0 }))
-            .sort((a, b) => b.votes - a.votes);
+            // Officers are not competing for one seat, so they keep their order and no leader is marked.
+            .sort((a, b) => (position === "officer" ? 0 : b.votes - a.votes));
           return (
             <div key={position} className="panel results">
               <div className="resultsHead">
-                <h3>{label}</h3>
+                <h3>{position === "officer" ? "Офицеры" : label}</h3>
                 <span className="muted">{votesLabel(voters)}</span>
               </div>
               {list.map((c, i) => {
                 const share = voters ? (c.votes / voters) * 100 : 0;
                 return (
-                  <div key={c.id} className={`resultRow ${i === 0 && c.votes ? "leader" : ""}`}>
+                  <div key={c.id} className={`resultRow ${position !== "officer" && i === 0 && c.votes ? "leader" : ""}`}>
                     <Avatar c={c} className="resultAvatar" />
                     <div className="resultMain">
                       <div className="resultLabel">
