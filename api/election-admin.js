@@ -42,10 +42,13 @@ export default async function handler(req, res) {
       if (!raw) return json(res, 404, { error: "Кандидат не найден" });
       const candidate = { ...JSON.parse(raw), hidden: body.action === "hide" };
       await redis("HSET", "candidates", candidate.id, JSON.stringify(candidate));
-    } else if (body.action === "officerRole") {
+    } else if (body.action === "update") {
+      // Edits only the fields that are sent: officer type and/or plan.
       const raw = await redis("HGET", "candidates", String(body.id || ""));
       if (!raw) return json(res, 404, { error: "Кандидат не найден" });
-      const candidate = { ...JSON.parse(raw), officerRole: String(body.officerRole || "").trim().slice(0, 80) };
+      const candidate = JSON.parse(raw);
+      if (typeof body.officerRole === "string") candidate.officerRole = body.officerRole.trim().slice(0, 80);
+      if (typeof body.plan === "string" && body.plan.trim().length >= 10) candidate.plan = body.plan.trim().slice(0, 2000);
       await redis("HSET", "candidates", candidate.id, JSON.stringify(candidate));
     } else if (body.action === "phase") {
       if (body.phase === "auto") await redis("DEL", "phase");
