@@ -158,9 +158,9 @@ function Hero({ data }) {
     before: ["Скоро старт", `Выдвижение начнётся ${formatDate(schedule.nominationStart)}.`],
     nomination: [
       "Идёт выдвижение",
-      "Резиденты со стажем от года могут выдвинуть себя на пост президента или офицера и рассказать, как будут развивать клуб.",
+      "Резиденты могут выдвинуть себя на пост президента или офицера и рассказать, как будут развивать клуб.",
     ],
-    voting: ["Идёт голосование", "Один резидент — один голос на каждую должность. Результаты обновляются в реальном времени."],
+    voting: ["Идёт голосование", "Один голос за президента, за офицеров — можно за нескольких. Голосовать можно один раз, результаты обновляются в реальном времени."],
     closed: ["Голосование завершено", "Итоги подведём в воскресенье. Спасибо всем, кто проголосовал!"],
   }[phase];
   const deadline = {
@@ -249,7 +249,7 @@ function CandidateCard({ c, data, selected, onSelect, onOpen }) {
       <div className="cardPhoto">
         <Avatar c={c} />
         {selectable && <span className={`check ${selected ? "on" : ""}`}>✓</span>}
-        {!c.eligible && <span className="badge">Стаж меньше года</span>}
+        {!c.eligible && <span className="badge">Скрыт</span>}
       </div>
       <div className="cardBody">
         <span className={`chip ${c.position}`}>{roleLabel(c)}</span>
@@ -487,8 +487,8 @@ function Ballot({ data, onDone, onOpen }) {
         return (
           <section key={position} className="ballotGroup">
             <div className="blockHead">
-              <h2>{position === "officer" ? "Выберите офицера" : "Выберите президента"}</h2>
-              <span className="muted">Один голос</span>
+              <h2>{position === "officer" ? "Выберите офицеров" : "Выберите президента"}</h2>
+              <span className="muted">{position === "officer" ? "Можно несколько" : "Один голос"}</span>
             </div>
             {list.length ? (
               <div className="grid">
@@ -498,8 +498,16 @@ function Ballot({ data, onDone, onOpen }) {
                     c={c}
                     data={data}
                     onOpen={onOpen}
-                    selected={choices[position] === c.id}
-                    onSelect={() => setChoices((prev) => ({ ...prev, [position]: c.id }))}
+                    selected={position === "officer" ? (choices.officer || []).includes(c.id) : choices[position] === c.id}
+                    onSelect={() =>
+                      setChoices((prev) => {
+                        if (position !== "officer") return { ...prev, [position]: c.id };
+                        const current = prev.officer || [];
+                        const officer = current.includes(c.id) ? current.filter((id) => id !== c.id) : [...current, c.id];
+                        const { officer: _, ...rest } = prev;
+                        return officer.length ? { ...rest, officer } : rest;
+                      })
+                    }
                   />
                 ))}
               </div>
@@ -513,10 +521,11 @@ function Ballot({ data, onDone, onOpen }) {
         <div className="voteBarInner">
           <div className="voteSummary">
             {open.map((p) => {
-              const c = data.candidates.find((x) => x.id === choices[p]);
+              const ids = [choices[p] || []].flat();
+              const names = data.candidates.filter((x) => ids.includes(x.id)).map((x) => x.name);
               return (
                 <span key={p}>
-                  {data.positions[p]}: <b>{c ? c.name : "не выбран"}</b>
+                  {p === "officer" ? "Офицеры" : data.positions[p]}: <b>{names.length ? names.join(", ") : "не выбран"}</b>
                 </span>
               );
             })}
@@ -692,7 +701,7 @@ function Admin() {
             <Results
               title="Голоса"
               data={{ positions: POSITION_NAMES, results: data.results }}
-              candidates={data.candidates.map((c) => ({ ...c, eligible: !c.hidden && c.tenure !== "lt1" }))}
+              candidates={data.candidates.map((c) => ({ ...c, eligible: !c.hidden }))}
             />
           </div>
         </div>

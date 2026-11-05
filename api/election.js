@@ -71,23 +71,34 @@ const nominate = async (redis, body, phone) => {
   return [200, { ok: true }];
 };
 
+// Officers are multi-choice: the ballot may name several, each counted once.
+const MULTI = new Set(["officer"]);
+
 const vote = async (redis, body, phone) => {
   const choices = body.choices && typeof body.choices === "object" ? body.choices : {};
   const candidates = await getCandidates(redis);
   const picked = Object.keys(POSITIONS)
-    .filter((position) => choices[position])
-    .map((position) => [position, candidates.find((c) => c.id === choices[position])]);
+    .map((position) => {
+      const raw = choices[position];
+      const ids = [...new Set((Array.isArray(raw) ? raw : [raw]).filter((id) => typeof id === "string" && id))];
+      return [position, MULTI.has(position) ? ids : ids.slice(0, 1)];
+    })
+    .filter(([, ids]) => ids.length)
+    .map(([position, ids]) => [position, ids.map((id) => candidates.find((c) => c.id === id))]);
 
-  if (!picked.length || picked.some(([position, c]) => !c || c.position !== position || !isEligible(c))) {
+  if (
+    !picked.length ||
+    picked.some(([position, list]) => list.some((c) => !c || c.position !== position || !isEligible(c)))
+  ) {
     return [400, { error: "Выберите кандидата из списка" }];
   }
 
   const recorded = [];
   const repeated = [];
-  for (const [position, candidate] of picked) {
+  for (const [position, list] of picked) {
     // SADD is atomic, so a second ballot from the same phone never reaches HINCRBY.
     if (await redis("SADD", `voted:${position}`, phone)) {
-      await redis("HINCRBY", `votes:${position}`, candidate.id, 1);
+      for (const candidate of list) await redis("HINCRBY", `votes:${position}`, candidate.id, 1);
       recorded.push(position);
     } else {
       repeated.push(position);

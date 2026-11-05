@@ -42,6 +42,11 @@ export default async function handler(req, res) {
       if (!raw) return json(res, 404, { error: "Кандидат не найден" });
       const candidate = { ...JSON.parse(raw), hidden: body.action === "hide" };
       await redis("HSET", "candidates", candidate.id, JSON.stringify(candidate));
+    } else if (body.action === "officerRole") {
+      const raw = await redis("HGET", "candidates", String(body.id || ""));
+      if (!raw) return json(res, 404, { error: "Кандидат не найден" });
+      const candidate = { ...JSON.parse(raw), officerRole: String(body.officerRole || "").trim().slice(0, 80) };
+      await redis("HSET", "candidates", candidate.id, JSON.stringify(candidate));
     } else if (body.action === "phase") {
       if (body.phase === "auto") await redis("DEL", "phase");
       else if (PHASES.includes(body.phase)) await redis("SET", "phase", body.phase);

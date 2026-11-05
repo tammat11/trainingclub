@@ -103,8 +103,8 @@ export const getCandidates = async (redis) =>
     .map((raw) => JSON.parse(raw))
     .sort((a, b) => a.createdAt - b.createdAt);
 
-// Residents with less than a year in the club are filtered out before voting.
-export const isEligible = (candidate) => !candidate.hidden && candidate.tenure !== "lt1";
+// Tenure is shown on the card but no longer limits who is on the ballot.
+export const isEligible = (candidate) => !candidate.hidden;
 
 export const getResults = async (redis) => {
   const results = {};
